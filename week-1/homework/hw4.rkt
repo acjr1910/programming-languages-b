@@ -5,6 +5,7 @@
 
 ;; put your code below
 
+(define ones (lambda () (cons 1 ones)))
 
 (define (sequence low high stride)
   (if (> low high)
@@ -14,4 +15,19 @@
 (define (string-append-map xs suffix)
   (map (lambda (str) (string-append str suffix)) xs))
 
-(define (list-nth-mod x) x)
+(define (list-nth-mod xs n)
+  (cond [(< n 0)    (error "list-nth-mod: negative number")]
+        [(null? xs) (error "list-nth-mod: empty list")]
+        [#t (car (list-tail xs (remainder n (length xs))))]))
+
+(define (stream-for-n-steps s n)
+  (if (= n 0)
+      null
+      (cons (car (s)) (stream-for-n-steps (cdr (s)) (- n 1)))))
+
+(define funny-number-stream
+  (letrec ([f (lambda (x)
+                (cons
+                 (if (= (modulo x 5) 0) (- x) x)
+                 (lambda () (f (+ x 1)))))])
+    (lambda () (f 1))))
