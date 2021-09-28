@@ -31,3 +31,14 @@
                  (if (= (modulo x 5) 0) (- x) x)
                  (lambda () (f (+ x 1)))))])
     (lambda () (f 1))))
+
+(define dan-then-dog
+  (letrec ([f (lambda (s)
+                (cons s
+                      (lambda () (f (if (string=? s "dan.jpg") "dog.jpg" "dan.jpg")))))])
+    (lambda () (f "dan.jpg"))))
+
+(define (stream-add-zero s)
+       (letrec ([f (lambda(x)
+                (lambda () (cons (cons 0 (car (x))) (f (cdr (x))))))])
+      (f s)))
