@@ -5,8 +5,6 @@
 
 ;; put your code below
 
-(define ones (lambda () (cons 1 ones)))
-
 (define (sequence low high stride)
   (if (> low high)
       null
@@ -42,3 +40,35 @@
        (letrec ([f (lambda(x)
                 (lambda () (cons (cons 0 (car (x))) (f (cdr (x))))))])
       (f s)))
+
+(define (cycle-lists xs ys)
+     (letrec([f (lambda(n)
+                (lambda() (cons  (cons (list-nth-mod xs n) (list-nth-mod ys n)) (f (+ n 1)) )))])
+     (f 0 )))
+
+(define (vector-assoc v vec)
+         (letrec  ([len (vector-length vec)]
+                   [f (lambda(current)
+                     (cond[(= current len) #f]
+                          [(pair? (vector-ref vec current)) (if (equal? (car (vector-ref vec current)) v)
+                                                                (vector-ref vec current)
+                                                                (f (+ current 1)))]
+                          [#t (f (+ current 1))]))])
+         (f 0)))
+
+(define (cached-assoc xs n)
+         (letrec
+             ([cache (make-vector n)]
+              [cache-slot 0]
+              [find (lambda(x)
+                      (let ([v-from-cache (vector-assoc x cache)])
+                        (if v-from-cache
+                            v-from-cache
+                            (let ([v-from-xs (vector-assoc x xs)])
+                              (if v-from-xs
+                                  (begin
+                                    (vector-set! cache cache-slot v-from-xs)
+                                    (set! cache-slot (remainder (+ cache-slot 1) n))
+                                    v-from-xs)
+                                  v-from-xs)))))])
+           find))
