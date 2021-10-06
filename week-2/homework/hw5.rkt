@@ -22,7 +22,23 @@
 
 ;; Problem 1
 
-;; CHANGE (put your solutions here)
+; (a) Write a Racket function racketlist->mupllist that takes a Racket list (presumably of mupl
+; values but that will not affect your solution) and produces an analogous mupl list with
+; the same elements in the same order.
+
+(define (racketlist->mupllist xs)
+  (if (null? xs)
+      (aunit)
+      (apair (car xs) (racketlist->mupllist (cdr xs)))))
+
+;; (b) Write a Racket function mupllist->racketlist that takes a mupl list (presumably of mupl values
+; but that will not affect your solution) and produces an analogous Racket list (of mupl values)
+;with the same elements in the same order.
+
+(define (mupllist->racketlist xs)
+  (if (aunit? xs)
+      null
+      (cons (apair-e1 xs) (mupllist->racketlist (apair-e2 xs)))))
 
 ;; Problem 2
 
@@ -49,6 +65,7 @@
                        (int-num v2)))
                (error "MUPL addition applied to non-number")))]
         ;; CHANGE add more cases here
+        [(int? e) e]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
